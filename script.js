@@ -168,3 +168,47 @@ function renderLoans() {
     // Wstawiamy gotowy HTML na stronę
     listContainer.innerHTML = html;
 }
+// 1. Funkcja, która wypełnia listę <select> wszystkimi pozycjami z Twojej bazy 'books'
+function fillLabelSelect() {
+    const select = document.getElementById('labelSelect');
+    if(!select) return;
+
+    // Sortujemy alfabetycznie, żeby łatwiej było szukać
+    const sortedBooks = [...books].sort((a, b) => a.title.localeCompare(b.title));
+
+    sortedBooks.forEach(book => {
+        const option = document.createElement('option');
+        option.value = book.id;
+        option.textContent = `[${book.id}] ${book.title}`;
+        select.appendChild(option);
+    });
+}
+
+// 2. Funkcja wywoływana przez Twój przycisk
+function printLabel() {
+    const selectedId = document.getElementById('labelSelect').value;
+    const item = books.find(b => b.id === selectedId);
+
+    if (!item) {
+        alert("Najpierw wybierz dokument z listy!");
+        return;
+    }
+
+    // Wstawiamy dane do szablonu etykiety
+    document.getElementById('l-title').innerText = item.title;
+    document.getElementById('l-id').innerText = item.id;
+
+    // Dodajemy klasę do body, żeby CSS wiedział co ukryć
+    document.body.classList.add('printing-label');
+    
+    // Wywołujemy okno drukowania Safari
+    window.print();
+
+    // Po zamknięciu okna druku przywracamy wygląd panelu
+    setTimeout(() => {
+        document.body.classList.remove('printing-label');
+    }, 500);
+}
+
+// WYWOŁANIE: Musisz to dodać na końcu pliku JS, żeby lista się załadowała!
+fillLabelSelect();

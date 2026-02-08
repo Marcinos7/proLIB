@@ -24,3 +24,19 @@ tr:hover { background-color: #f9f9f9; }
 @media print {
     #loans-list { display: none; }
 }
+.print-only-label { display: none; }
+
+@media print {
+    /* Jeśli drukujemy etykietę (body ma klasę printing-label) */
+    body.printing-label .no-print, 
+    body.printing-label #receipt, 
+    body.printing-label #loans-list,
+    body.printing-label h1 { 
+        display: none !important; 
+    }
+    
+    body.printing-label .print-only-label { 
+        display: block !important;
+        margin-top: 50px;
+    }
+}
