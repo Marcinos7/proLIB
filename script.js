@@ -1,13 +1,11 @@
-console.log("System proLIB załadowany poprawnie!");
-// 1. BAZA CZYTELNIKÓW (6-cyfrowe kody)
+// --- BAZA CZYTELNIKÓW (6-cyfrowe kody) ---
 const users = [
     { id: "100100", name: "Jan Kowalski" },
     { id: "200200", name: "Anna Nowak" },
-    { id: "300300", name: "Marek Woźniak" },
-    { id: "400400", name: "Adam Kamiński" },
+    { id: "300300", name: "Marek Woźniak" }
 ];
 
-// 2. baza książek
+// --- BAZA KSIĄŻEK I DOKUMENTÓW (4-cyfrowe kody) ---
 const books = [
     { id: "1001", title: "Moje Szczesliwe Malzeństwo cz. 1" },
     { id: "1002", title: "Moje Szczesliwe Malzeństwo cz. 2" },
@@ -38,12 +36,20 @@ const books = [
     { id: "3001", title: "SUPER Farmer" },
     { id: "3002", title: "Haunted House" },
     { id: "3003", title: "Puzzle 300" },
-    { id: "3004", title: "Puzzle 200" },
-
+    { id: "3004", title: "Puzzle 200" }
 ];
-let loans = [
 
-];
+// --- INICJALIZACJA LISTY WYPOŻYCZEŃ Z LOCAL STORAGE ---
+// Pobieramy dane lub tworzymy pustą listę, jeśli pamięć jest pusta
+let loans = JSON.parse(localStorage.getItem('prolib_loans')) || [];
+
+// Funkcja zapisująca aktualny stan loans do pamięci przeglądarki
+function saveToStorage() {
+    localStorage.setItem('prolib_loans', JSON.stringify(loans));
+    console.log("Zapisano zmiany w pamięci lokalnej.");
+    console.table(loans); // Wyświetla listę wypożyczeń w konsoli dla podglądu
+}
+
 function showLoanForm() {
     document.getElementById('loan-form').style.display = 'block';
 }
@@ -52,102 +58,72 @@ function processLoan() {
     const userIdInput = document.getElementById('userId').value;
     const bookIdInput = document.getElementById('bookId').value;
 
-    // 1. Sprawdzamy, czy czytelnik istnieje w bazie users
+    // 1. Sprawdzanie czytelnika
     const user = users.find(u => u.id === userIdInput);
     if (!user) {
-        alert("BŁĄD: Nie znaleziono czytelnika o ID " + userIdInput + " w bazie!");
+        alert("BŁĄD: Nie znaleziono czytelnika o ID " + userIdInput);
         return;
     }
 
-    // 2. Sprawdzamy, czy dokument istnieje w bazie books
+    // 2. Sprawdzanie dokumentu
     const item = books.find(i => i.id === bookIdInput);
     if (!item) {
         alert("BŁĄD: Nie ma takiego dokumentu w bazie!");
         return;
     }
 
-    // 3. Sprawdzamy, czy ten dokument nie jest już wypożyczony (czy jest w liście loans)
+    // 3. Sprawdzanie czy już wypożyczone
     const isAlreadyBorrowed = loans.some(l => l.bookId === bookIdInput);
     if (isAlreadyBorrowed) {
-        alert("BŁĄD: Ta pozycja jest już wypożyczona i nie została zwrócona!");
+        alert("BŁĄD: Ten przedmiot jest obecnie wypożyczony!");
         return;
     }
 
-    // 4. Rozpoznajemy kategorię na podstawie pierwszej cyfry kodu
+    // 4. Kategoria
     let category = "INNY DOKUMENT";
     const firstDigit = bookIdInput[0];
-    if (firstDigit === "1") {
-        category = "KSIĄŻKA";
-    } else if (firstDigit === "2") {
-        category = "GRA KOMPUTEROWA";
-    } else if (firstDigit === "3") {
-        category = "GRA PLANSZOWA";
-    }
+    if (firstDigit === "1") category = "KSIĄŻKA";
+    else if (firstDigit === "2") category = "GRA KOMPUTEROWA";
+    else if (firstDigit === "3") category = "GRA PLANSZOWA";
 
-    // 5. Obliczamy termin zwrotu (za miesiąc)
+    // 5. Data zwrotu
     let dueDate = new Date();
     dueDate.setMonth(dueDate.getMonth() + 1);
     let dateString = dueDate.toLocaleDateString('pl-PL');
 
-    // 6. ZAPISUJEMY wypożyczenie do listy (żeby system o nim pamiętał)
+    // 6. Dodanie do listy i ZAPIS w LocalStorage
     loans.push({
         userId: userIdInput,
         userName: user.name,
         bookId: bookIdInput,
         bookTitle: item.title,
-        loanDate: new Date().toLocaleDateString('pl-PL'),
         returnDate: dateString
     });
+    saveToStorage();
 
-    // 7. Wypełniamy pola w sekcji wydruku (HTML)
+    // 7. Wypełnienie wydruku
     document.getElementById('p-userId').innerText = user.id + " (" + user.name + ")";
     document.getElementById('p-category').innerText = category;
     document.getElementById('p-bookTitle').innerText = item.title;
     document.getElementById('p-bookId').innerText = item.id;
     document.getElementById('p-dueDate').innerText = dateString;
 
-    // 8. Komunikat dla bibliotekarza i wywołanie drukowania
     alert("Wypożyczono pomyślnie!");
     window.print();
-
-    // Opcjonalnie: czyścimy pola formularza po wypożyczeniu
-    document.getElementById('userId').value = "";
-    document.getElementById('bookId').value = "";
 }
 
 function handleReturn() {
-    // 1. Pytamy bibliotekarza o kod zwracanego przedmiotu
-    let code = prompt("Zeskanuj lub wpisz kod dokumentu do zwrotu (4 cyfry):");
-
-    // Jeśli użytkownik kliknął "Anuluj" lub nic nie wpisał, kończymy funkcję
+    let code = prompt("Podaj kod dokumentu do zwrotu:");
     if (!code) return;
 
-    // 2. Szukamy wypożyczenia na liście aktywnych wypożyczeń (loans)
     const loanIndex = loans.findIndex(l => l.bookId === code);
 
-    // 3. Sprawdzamy, czy ten przedmiot w ogóle był oznaczony jako wypożyczony
     if (loanIndex !== -1) {
-        // Pobieramy dane o wypożyczeniu, żeby wyświetlić ładny komunikat
-        const returnedItem = loans[loanIndex];
-        
-        // Usuwamy wypożyczenie z tablicy loans
-        loans.splice(loanIndex, 1);
-
-        // Informujemy o sukcesie
-        alert("ZWROT PRZYJĘTY!\n\nDokument: " + returnedItem.bookTitle + "\nCzytelnik: " + returnedItem.userName);
-        
-        console.log("Aktualna lista aktywnych wypożyczeń:", loans);
+        const itemTitle = loans[loanIndex].bookTitle;
+        loans.splice(loanIndex, 1); // Usuwamy z listy
+        saveToStorage(); // Zapisujemy zmiany w pamięci
+        alert("Przyjęto zwrot: " + itemTitle);
     } else {
-        // Jeśli kodu nie ma na liście loans, oznacza to, że książka jest już na półce
-        // lub wpisano błędny kod.
-        
-        // Dodatkowe sprawdzenie, czy taka książka w ogóle istnieje w bazie books
-        const itemExists = books.some(b => b.id === code);
-        
-        if (itemExists) {
-            alert("INFORMACJA: Ta pozycja o kodzie " + code + " znajduje się już w bibliotece (nie była wypożyczona).");
-        } else {
-            alert("BŁĄD: Nie znaleziono dokumentu o kodzie " + code + " w bazie danych biblioteki.");
-        }
+        alert("BŁĄD: Ten dokument nie widnieje jako wypożyczony.");
     }
 }
