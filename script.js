@@ -184,27 +184,27 @@ function fillLabelSelect() {
     });
 }
 
-// 2. Funkcja wywoływana przez Twój przycisk
 function printLabel() {
     const selectedId = document.getElementById('labelSelect').value;
     const item = books.find(b => b.id === selectedId);
 
     if (!item) {
-        alert("Najpierw wybierz dokument z listy!");
+        alert("Wybierz dokument z listy!");
         return;
     }
 
-    // Wstawiamy dane do szablonu etykiety
+    // Wypełniamy dane etykiety
     document.getElementById('l-title').innerText = item.title;
     document.getElementById('l-id').innerText = item.id;
 
-    // Dodajemy klasę do body, żeby CSS wiedział co ukryć
+    // DODAJEMY KLASĘ - to mówi CSS-owi: "teraz drukuj tylko etykietę!"
     document.body.classList.add('printing-label');
     
-    // Wywołujemy okno drukowania Safari
+    // Wywołujemy drukarkę
     window.print();
 
-    // Po zamknięciu okna druku przywracamy wygląd panelu
+    // USUWAMY KLASĘ - po zamknięciu okna druku wszystko wraca do normy
+    // Używamy krótkiego opóźnienia, żeby Safari zdążyło przetworzyć wydruk
     setTimeout(() => {
         document.body.classList.remove('printing-label');
     }, 500);
