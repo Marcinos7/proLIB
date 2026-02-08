@@ -8,35 +8,32 @@ button { flex: 1; padding: 12px; cursor: pointer; border: none; border-radius: 6
 input { width: calc(100% - 22px); padding: 10px; margin: 10px 0; border: 2px solid #ddd; border-radius: 6px; }
 .card { border-top: 4px solid #27ae60; padding-top: 10px; }
 
-/* Obsługa drukowania */
-.print-only { display: none; }
-@media print {
-    .no-print { display: none; }
-    .print-only { display: block; width: 300px; margin: 0 auto; font-size: 14px; }
-}
+
 
 table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
 th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }
 th { background-color: #f2f2f2; }
 tr:hover { background-color: #f9f9f9; }
 
-/* Ukrywamy listę podczas drukowania paragonu */
-@media print {
-    #loans-list { display: none; }
+/* Ukrywamy oba szablony domyślnie na ekranie */
+.print-only, .print-only-label { 
+    display: none; 
 }
-.print-only-label { display: none; }
 
 @media print {
-    /* Jeśli drukujemy etykietę (body ma klasę printing-label) */
-    body.printing-label .no-print, 
-    body.printing-label #receipt, 
-    body.printing-label #loans-list,
-    body.printing-label h1 { 
+    /* 1. Domyślnie podczas druku ukrywamy wszystko co nie jest potrzebne */
+    .no-print { display: none !important; }
+
+    /* 2. Jeśli drukujemy WYPOŻYCZENIE (standardowe window.print() bez klas) */
+    #receipt { display: block; }
+    .print-only-label { display: none !important; }
+
+    /* 3. Jeśli drukujemy ETYKIETĘ (gdy JS doda klasę 'printing-label') */
+    body.printing-label #receipt { 
         display: none !important; 
     }
-    
     body.printing-label .print-only-label { 
-        display: block !important;
-        margin-top: 50px;
+        display: block !important; 
+        border: none;
     }
 }
