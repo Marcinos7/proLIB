@@ -13,6 +13,7 @@
         <div class="actions">
             <button onclick="showLoanForm()" class="btn-loan">Wypożyczenie</button>
             <button onclick="handleReturn()" class="btn-return">Zwrot</button>
+            <button onclick="renderLoans()" style="background: #9b59b6; margin-top: 10px;">Lista wypożyczeń</button>
         </div>
 
         <div id="loan-form" style="display:none;" class="card">
@@ -21,6 +22,9 @@
             <input type="text" id="bookId" placeholder="Kod dokumentu (4 cyfry)" maxlength="4">
             <button onclick="processLoan()">Zatwierdź i Drukuj</button>
         </div>
+
+
+        <div id="loans-list" class="no-print" style="margin-top: 20px;"></div>
     </div>
 
     <div id="receipt" class="print-only">

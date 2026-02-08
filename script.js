@@ -127,3 +127,44 @@ function handleReturn() {
         alert("BŁĄD: Ten dokument nie widnieje jako wypożyczony.");
     }
 }
+function renderLoans() {
+    const listContainer = document.getElementById('loans-list');
+    
+    // Jeśli lista jest pusta
+    if (loans.length === 0) {
+        listContainer.innerHTML = "<p style='text-align:center;'>Brak aktywnych wypożyczeń.</p>";
+        return;
+    }
+
+    // Tworzymy nagłówek tabeli
+    let html = `
+        <h3>Aktywne wypożyczenia</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Czytelnik</th>
+                    <th>Tytuł</th>
+                    <th>Kod</th>
+                    <th>Termin zwrotu</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    // Dodajemy wiersze dla każdego wypożyczenia
+    loans.forEach(loan => {
+        html += `
+            <tr>
+                <td>${loan.userName} (${loan.userId})</td>
+                <td>${loan.bookTitle}</td>
+                <td>${loan.bookId}</td>
+                <td>${loan.returnDate}</td>
+            </tr>
+        `;
+    });
+
+    html += `</tbody></table>`;
+    
+    // Wstawiamy gotowy HTML na stronę
+    listContainer.innerHTML = html;
+}

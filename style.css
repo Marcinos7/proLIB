@@ -14,3 +14,13 @@ input { width: calc(100% - 22px); padding: 10px; margin: 10px 0; border: 2px sol
     .no-print { display: none; }
     .print-only { display: block; width: 300px; margin: 0 auto; font-size: 14px; }
 }
+
+table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 14px; }
+th { background-color: #f2f2f2; }
+tr:hover { background-color: #f9f9f9; }
+
+/* Ukrywamy listę podczas drukowania paragonu */
+@media print {
+    #loans-list { display: none; }
+}
