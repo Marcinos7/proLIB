@@ -1,4 +1,11 @@
-// Przykładowa baza książek
+// 1. BAZA CZYTELNIKÓW (6-cyfrowe kody)
+const users = [
+    { id: "100100", name: "Jan Kowalski" },
+    { id: "200200", name: "Anna Nowak" },
+    { id: "300300", name: "Marek Woźniak" }
+];
+
+// 2. baza książek
 const books = [
     { id: "1001", title: "Moje Szczesliwe Malzeństwo cz. 1" },
     { id: "1002", title: "Moje Szczesliwe Malzeństwo cz. 2" },
@@ -37,40 +44,50 @@ function showLoanForm() {
     document.getElementById('loan-form').style.display = 'block';
 }
 
-function handleReturn() {
-    let code = prompt("Podaj kod zwracanej książki:");
-    if(code) alert("Książka " + code + " została zwrócona!");
-}
-
 function processLoan() {
-    const userId = document.getElementById('userId').value;
-    const bookId = document.getElementById('bookId').value;
+    const userIdInput = document.getElementById('userId').value;
+    const bookIdInput = document.getElementById('bookId').value;
 
-    // 1. Szukamy książki w naszej liście
-    const book = books.find(b => b.id === bookId);
+    // --- LOGIKA SPRAWDZANIA CZYTELNIKA ---
+    const user = users.find(u => u.id === userIdInput);
+    
+    if (!user) {
+        alert("BŁĄD: Nie znaleziono czytelnika o ID " + userIdInput + " w bazie!");
+        return; // Zatrzymuje funkcję, nie pozwala na wydruk
+    }
 
-    if (!book) {
-        alert("Błąd: Nie znaleziono książki o takim kodzie!");
+    // --- LOGIKA SPRAWDZANIA DOKUMENTU ---
+    const item = libraryData.find(i => i.id === bookIdInput);
+
+    if (!item) {
+        alert("BŁĄD: Nie ma takiego dokumentu w bazie!");
         return;
     }
 
-    if (userId.length !== 6) {
-        alert("Błąd: ID czytelnika musi mieć 6 cyfr!");
-        return;
-    }
+    // Jeśli wszystko OK, rozpoznaj kategorię
+    let category = "";
+    const firstDigit = bookIdInput[0];
+    if (firstDigit === "1") category = "KSIĄŻKA";
+    else if (firstDigit === "2") category = "GRA KOMPUTEROWA";
+    else if (firstDigit === "3") category = "GRA PLANSZOWA";
 
-    // 2. Obliczamy datę (dzisiaj + 30 dni)
+    // Oblicz datę
     let dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + 30);
+    dueDate.setMonth(dueDate.getMonth() + 1);
     let dateString = dueDate.toLocaleDateString('pl-PL');
 
-    // 3. Wypełniamy szablon wydruku danymi
-    document.getElementById('p-userId').innerText = userId;
-    document.getElementById('p-bookTitle').innerText = book.title;
-    document.getElementById('p-bookId').innerText = book.id;
+    // Wypełnij szablon (z dodaniem imienia czytelnika dla pewności)
+    document.getElementById('p-userId').innerText = user.id + " (" + user.name + ")";
+    document.getElementById('p-category').innerText = category;
+    document.getElementById('p-bookTitle').innerText = item.title;
+    document.getElementById('p-bookId').innerText = item.id;
     document.getElementById('p-dueDate').innerText = dateString;
 
-    // 4. Komunikat i druk
-    alert("Wypożyczono!");
+    alert("Wypożyczono dla: " + user.name);
     window.print();
+}
+
+function handleReturn() {
+    let code = prompt("Podaj kod dokumentu do zwrotu:");
+    if(code) alert("Dokument " + code + " wrócił do biblioteki.");
 }

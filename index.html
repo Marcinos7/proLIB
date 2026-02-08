@@ -11,26 +11,29 @@
         <h1>proLIB - Panel Bibliotekarza</h1>
         
         <div class="actions">
-            <button onclick="showLoanForm()">Wypożyczenie</button>
-            <button onclick="handleReturn()">Zwrot</button>
+            <button onclick="showLoanForm()" class="btn-loan">Wypożyczenie</button>
+            <button onclick="handleReturn()" class="btn-return">Zwrot</button>
         </div>
 
-        <div id="loan-form" style="display:none;">
+        <div id="loan-form" style="display:none;" class="card">
             <h3>Nowe Wypożyczenie</h3>
-            <input type="text" id="userId" placeholder="ID czytelnika (6 cyfr)">
-            <input type="text" id="bookId" placeholder="Kod książki (4 cyfry)">
+            <input type="text" id="userId" placeholder="ID czytelnika (6 cyfr)" maxlength="6">
+            <input type="text" id="bookId" placeholder="Kod dokumentu (4 cyfry)" maxlength="4">
             <button onclick="processLoan()">Zatwierdź i Drukuj</button>
         </div>
     </div>
 
     <div id="receipt" class="print-only">
-        <h2>BIBLIOTEKA NIEPUBLICZNA "Twój Dom"</h2>
-        <hr>
+        <center>
+            <h2>BIBLIOTEKA NIEPUBLICZNA "Twój Dom"</h2>
+            <p>------------------------------------------</p>
+        </center>
         <p><strong>ID czytelnika:</strong> <span id="p-userId"></span></p>
-        <p><strong>Dokument:</strong> <span id="p-bookTitle"></span>, <span id="p-bookId"></span></p>
+        <p><strong>Typ:</strong> <span id="p-category"></span></p>
+        <p><strong>Dokument:</strong> <span id="p-bookTitle"></span></p>
+        <p><strong>Kod:</strong> <span id="p-bookId"></span></p>
         <p><strong>Termin zwrotu:</strong> <span id="p-dueDate"></span></p>
-        <br>
-        <p style="font-size: 10px; text-align: center;">Dziękujemy za skorzystanie z proLIB</p>
+        <p>------------------------------------------</p>
     </div>
 
     <script src="script.js"></script>
