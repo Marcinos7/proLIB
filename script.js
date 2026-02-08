@@ -2,7 +2,8 @@
 const users = [
     { id: "100100", name: "Jan Kowalski" },
     { id: "200200", name: "Anna Nowak" },
-    { id: "300300", name: "Marek Woźniak" }
+    { id: "300300", name: "Marek Woźniak" },
+    { id: "400400", name: "Adam Kamiński" },
 ];
 
 // 2. baza książek
@@ -57,7 +58,7 @@ function processLoan() {
     }
 
     // --- LOGIKA SPRAWDZANIA DOKUMENTU ---
-    const item = libraryData.find(i => i.id === bookIdInput);
+    const item = books.find(i => i.id === bookIdInput);
 
     if (!item) {
         alert("BŁĄD: Nie ma takiego dokumentu w bazie!");
