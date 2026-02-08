@@ -1,3 +1,4 @@
+console.log("System proLIB załadowany poprawnie!");
 // 1. BAZA CZYTELNIKÓW (6-cyfrowe kody)
 const users = [
     { id: "100100", name: "Jan Kowalski" },
